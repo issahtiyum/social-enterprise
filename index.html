@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KoraFresh — Solar Cold Rooms for Ghanaian Farm Cooperatives</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Warm field-paper neutral ramp */
+      --bg-page: #F6F4F0;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #EFECE6;
+      --bg-active: #E6E2DA;
+
+      /* Three text roles */
+      --text-primary: #1C1B18;
+      --text-secondary: #535048;
+      --text-muted: #78736A;
+
+      /* Hairline borders from the text ramp */
+      --border-hairline: rgba(28, 27, 24, 0.08);
+      --border-strong: rgba(28, 27, 24, 0.16);
+
+      /* Single chrome accent (high contrast terracotta) & toned semantic green */
+      --accent: #B8431E;
+      --accent-hover: #9E3716;
+      --accent-tint: rgba(184, 67, 30, 0.08);
+      --semantic-good: #2A6B47;
+
+      /* Nested radii (4px grid aligned) */
+      --r-panel: 16px;
+      --r-card: 12px;
+      --r-control: 8px;
+
+      /* Single easing curve and short durations */
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --dur-fast: 160ms;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 400;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono,
+    .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Focus states for keyboard navigation */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    tr:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Quiet Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background-color: rgba(246, 244, 240, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .nav-bar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background-color: var(--text-primary);
+      color: var(--bg-page);
+      display: grid;
+      place-items: center;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .brand-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 12px;
+      border-left: 1px solid var(--border-strong);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      transition: color var(--dur-fast) var(--ease);
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ussd-signature {
+      font-size: 12px;
+      color: var(--text-muted);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-hairline);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    /* Controls share 8px radius */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: var(--r-control);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    /* Scene Hero */
+    .hero-scene-wrapper {
+      position: relative;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .hero-scene {
+      position: relative;
+      min-height: 600px;
+      background-image: url('hero-hub.jpg');
+      background-size: cover;
+      background-position: center right;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 64px;
+      padding-bottom: 128px;
+    }
+
+    /* Calm neutral scrim on the left empty sky/courtyard so dark text reads effortlessly */
+    .hero-scene::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(246, 244, 240, 0.96) 0%,
+        rgba(246, 244, 240, 0.88) 42%,
+        rgba(246, 244, 240, 0.16) 72%,
+        rgba(246, 244, 240, 0.0) 100%
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 560px;
+    }
+
+    .hero-context {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: var(--semantic-good);
+      display: inline-block;
+    }
+
+    .hero-content h1 {
+      font-size: 44px;
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .hero-content p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      max-width: 480px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Product Telemetry View rising from bottom edge of scene */
+    .hero-telemetry-shell {
+      position: relative;
+      z-index: 3;
+      margin-top: -80px;
+      margin-bottom: 64px;
+    }
+
+    .telemetry-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-panel);
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(28, 27, 24, 0.06);
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-hairline);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .telemetry-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .telemetry-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .telemetry-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Stat row: 4 compact number cards above the main chart + receipt */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .stat-figure {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .stat-delta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stat-delta.good {
+      color: var(--semantic-good);
+    }
+
+    /* Asymmetric split inside preview: Wide Main Chart (left) + Physical USSD Weighbridge Receipt Object (right) */
+    .telemetry-lower {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .chart-box {
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    /* Rendered physical object from the product's world: Stamped USSD Crate Ticket */
+    .receipt-object {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--r-card);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .receipt-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-strong);
+      margin-bottom: 12px;
+    }
+
+    .receipt-rows {
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .receipt-row span:first-child {
+      color: var(--text-secondary);
+    }
+
+    .receipt-row span:last-child {
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .receipt-footer {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-strong);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    /* Sections */
+    section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .section-head {
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .section-head h2 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .section-head p {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Mission & Vision + Values (Asymmetric Rhythm) */
+    .mv-layout {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .surface-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 24px;
+    }
+
+    .card-kicker {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .surface-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .surface-card p {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .values-table-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 24px;
+    }
+
+    .aligned-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px 32px;
+    }
+
+    .aligned-item {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .aligned-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .aligned-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .aligned-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* What the Social Enterprise is About: Problem vs Solution + Live Cooperative Ledger */
+    .about-split {
+      display: grid;
+      grid-template-columns: 5fr 7fr;
+      gap: 24px;
+    }
+
+    .narrative-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Table with distinct header, value-in-use, selection, and keyboard focus states */
+    .ledger-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+
+    .ledger-table th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    .ledger-table th.num-col,
+    .ledger-table td.num-col {
+      text-align: right;
+    }
+
+    .ledger-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-hairline);
+      color: var(--text-secondary);
+      height: 44px;
+    }
+
+    .ledger-table tbody tr {
+      cursor: pointer;
+      transition: background-color var(--dur-fast) var(--ease);
+    }
+
+    .ledger-table tbody tr:hover {
+      background-color: var(--bg-page);
+    }
+
+    /* Recognizable row state: Value in use */
+    .ledger-table tbody tr.row-in-use td {
+      color: var(--text-primary);
+    }
+
+    /* Recognizable row state: Active selection (surface step + hairline highlight) */
+    .ledger-table tbody tr.row-selected {
+      background-color: var(--bg-subtle);
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+
+    .ledger-table tbody tr.row-selected td {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Interactive Estimator */
+    .estimator-panel {
+      margin-top: 24px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-panel);
+      padding: 24px;
+    }
+
+    .estimator-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .slider-control {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    /* Founder Spotlight */
+    .founder-layout {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .founder-profile {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 24px;
+    }
+
+    .founder-monogram {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--r-control);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .founder-meta-list {
+      list-style: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-hairline);
+      display: grid;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .founder-meta-row {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 8px;
+      align-items: center;
+      height: 24px;
+    }
+
+    .founder-narrative {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-card);
+      padding: 32px;
+    }
+
+    .founder-narrative h3 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .founder-narrative p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .founder-pullquote {
+      padding: 16px 20px;
+      background-color: var(--bg-page);
+      border-left: 2px solid var(--accent);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 20px 0;
+    }
+
+    /* Contact / Partnership Section */
+    .contact-split {
+      display: grid;
+      grid-template-columns: 6fr 6fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .form-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--r-panel);
+      padding: 24px;
+    }
+
+    .form-field {
+      margin-bottom: 16px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: var(--r-control);
+      border: 1px solid var(--border-strong);
+      background-color: var(--bg-page);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .form-status {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: var(--r-control);
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    footer {
+      padding: 32px 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    @media (max-width: 960px) {
+      .stat-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .telemetry-lower,
+      .mv-layout,
+      .about-split,
+      .founder-layout,
+      .contact-split,
+      .aligned-list {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+      .hero-scene::before {
+        background: rgba(246, 244, 240, 0.9);
+      }
+      .hero-content h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Quiet Navigation -->
+  <header>
+    <div class="container nav-bar">
+      <a href="#" class="brand">
+        <span class="brand-mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </span>
+        <span class="brand-name">KoraFresh</span>
+        <span class="brand-meta">Ghana cold-chain cooperative</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#mission">Mission and vision</a></li>
+        <li><a href="#model">How it works</a></li>
+        <li><a href="#impact">Impact model</a></li>
+        <li><a href="#founder">Founder</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <span class="ussd-signature mono">*713*88#</span>
+        <a href="#partner" class="btn btn-primary">Partner with a hub</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Scene Hero + Rising Product Telemetry View -->
+  <div class="hero-scene-wrapper">
+    <div class="hero-scene">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-context">
+            <span class="status-dot"></span>
+            <span>Walk-in solar cold rooms at rural farm gates</span>
+          </div>
+          <h1>Keep harvested tomatoes fresh for 21 days at the village cooperative</h1>
+          <p>
+            Smallholder farmers in Bono East and Ashanti lose up to 40% of their harvest to heat before buyers arrive. KoraFresh places off-grid cold rooms directly at farming cooperatives for GHS 2 per crate per day and connects stored inventory to urban kitchens.
+          </p>
+          <div class="hero-actions">
+            <a href="#partner" class="btn btn-primary">Sponsor or join a hub</a>
+            <a href="#founder" class="btn btn-secondary">Read Haris Issah's story</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Telemetry Preview rising from the bottom edge -->
+    <div class="container hero-telemetry-shell">
+      <div class="telemetry-panel">
+        <div class="telemetry-header">
+          <div class="telemetry-title-group">
+            <span class="status-dot"></span>
+            <span class="telemetry-title">Techiman Cooperative Hub 01 — Chamber telemetry</span>
+          </div>
+          <span class="telemetry-meta mono">Updated 06:40 GMT · USSD *713*88#</span>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat-card">
+            <div class="stat-label">Chamber temperature</div>
+            <div class="stat-figure num">4.2°C</div>
+            <div class="stat-delta good">-29.8°C vs outside shade</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Crates checked in</div>
+            <div class="stat-figure num">312 / 400</div>
+            <div class="stat-delta">+48 crates vs yesterday</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Post-harvest spoilage</div>
+            <div class="stat-figure num">3.8%</div>
+            <div class="stat-delta good">-36.2 pts vs open baskets</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Daily storage tariff</div>
+            <div class="stat-figure num">GHS 2</div>
+            <div class="stat-delta">Per 25 kg crate via MoMo</div>
+          </div>
+        </div>
+
+        <div class="telemetry-lower">
+          <!-- Main Chart: Marketable weight & price retention over 21 days -->
+          <div class="chart-box">
+            <div class="chart-header">
+              <span class="chart-title">Saleable tomato weight retained after harvest (%)</span>
+              <div class="chart-legend">
+                <span class="legend-item">
+                  <span class="legend-swatch" style="background-color: var(--accent);"></span>
+                  <span>KoraFresh 4°C chamber</span>
+                </span>
+                <span class="legend-item">
+                  <span class="legend-swatch" style="background-color: var(--text-muted);"></span>
+                  <span>Open-air farm gate basket</span>
+                </span>
+              </div>
+            </div>
+
+            <svg viewBox="0 0 560 160" width="100%" height="160" role="img" aria-label="Line chart comparing tomato preservation at 4 degrees Celsius versus ambient shade over 21 days">
+              <!-- Muted grid lines -->
+              <line x1="40" y1="20" x2="540" y2="20" stroke="rgba(28,27,24,0.08)" stroke-width="1" />
+              <line x1="40" y1="68" x2="540" y2="68" stroke="rgba(28,27,24,0.08)" stroke-width="1" />
+              <line x1="40" y1="116" x2="540" y2="116" stroke="rgba(28,27,24,0.08)" stroke-width="1" />
+
+              <!-- Y-axis mono labels -->
+              <text x="32" y="24" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#78736A">100%</text>
+              <text x="32" y="72" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#78736A">50%</text>
+              <text x="32" y="120" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#78736A">0%</text>
+
+              <!-- X-axis mono labels -->
+              <text x="40" y="144" text-anchor="start" font-family="JetBrains Mono" font-size="11" fill="#78736A">Day 1</text>
+              <text x="165" y="144" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#78736A">Day 5</text>
+              <text x="290" y="144" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#78736A">Day 10</text>
+              <text x="415" y="144" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#78736A">Day 15</text>
+              <text x="540" y="144" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#78736A">Day 21</text>
+
+              <!-- Ambient line (neutral muted ramp) dropping steeply by day 5 -->
+              <path d="M 40 20 L 102 52 L 165 98 L 290 114 L 540 116" fill="none" stroke="#78736A" stroke-width="2" stroke-dasharray="4 4" />
+
+              <!-- KoraFresh 4°C line (single chart accent) holding 96% through day 21 -->
+              <path d="M 40 20 L 165 21 L 290 22 L 415 24 L 540 25" fill="none" stroke="#B8431E" stroke-width="2.5" />
+              <circle cx="540" cy="25" r="4" fill="#B8431E" />
+            </svg>
+          </div>
+
+          <!-- Physical Object from the World: USSD Weighbridge Storage Ticket -->
+          <div class="receipt-object">
+            <div>
+              <div class="receipt-top">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Weighbridge crate receipt</div>
+                  <div class="mono" style="font-size: 12px; color: var(--text-muted);">Ticket #TK-0492 · *713*88#</div>
+                </div>
+                <span class="mono" style="font-size: 12px; color: var(--semantic-good);">Chilled 4.2°C</span>
+              </div>
+
+              <div class="receipt-rows">
+                <div class="receipt-row">
+                  <span>Farmer member</span>
+                  <span style="font-weight: 500;">Abena Serwaa (Co-op 04)</span>
+                </div>
+                <div class="receipt-row">
+                  <span>Crop and weight</span>
+                  <span class="num">Roma tomatoes · 18 Crates (450 kg)</span>
+                </div>
+                <div class="receipt-row">
+                  <span>Storage duration</span>
+                  <span class="num">6 days @ GHS 2 / crate</span>
+                </div>
+                <div class="receipt-row">
+                  <span>Matched buyer</span>
+                  <span>Accra Central School Feeding</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="receipt-footer">
+              <span style="color: var(--text-secondary);">Net payout after storage</span>
+              <span class="num" style="font-size: 16px; font-weight: 600; color: var(--text-primary);">GHS 3,420 (+64% vs gate price)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission & Vision Section -->
+  <section id="mission">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Mission and vision</div>
+        <h2>Built to keep harvest value in farming communities</h2>
+        <p>
+          In Twi, Kora means to preserve and protect. We treat cold storage as basic rural infrastructure so farmers are never forced to sell perishable crops at distress prices.
+        </p>
+      </div>
+
+      <div class="mv-layout">
+        <div class="surface-card">
+          <div class="card-kicker">Mission</div>
+          <h3>Eliminate farm-gate food loss and double smallholder take-home income</h3>
+          <p>
+            We deploy walk-in, solar-powered cold rooms inside Ghanaian farming districts on a GHS 2 per crate daily rental and connect stored produce directly to schools, supermarkets, and agro-processors.
+          </p>
+        </div>
+
+        <div class="surface-card">
+          <div class="card-kicker">Vision</div>
+          <h3>A food-secure West Africa powered by clean rural cold chains</h3>
+          <p>
+            A regional agricultural system where every harvested crate reaches a kitchen, rural storage runs entirely on off-grid solar energy, and smallholder farming families earn predictable, dignified incomes.
+          </p>
+        </div>
+      </div>
+
+      <div class="values-table-card">
+        <div class="card-kicker" style="margin-bottom: 16px;">Operating principles</div>
+        <ul class="aligned-list">
+          <li class="aligned-item">
+            <svg class="aligned-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+            <div>
+              <div class="aligned-title">Feature-phone USSD access</div>
+              <div class="aligned-desc">Farmers check crate temperature, book space, and receive Mobile Money payouts by dialing <span class="mono">*713*88#</span> on any handset.</div>
+            </div>
+          </li>
+          <li class="aligned-item">
+            <svg class="aligned-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            </svg>
+            <div>
+              <div class="aligned-title">100% off-grid thermal storage</div>
+              <div class="aligned-desc">Rooftop monocrystalline solar arrays freeze phase-change thermal plates during the day to hold 4°C through the night without diesel.</div>
+            </div>
+          </li>
+          <li class="aligned-item">
+            <svg class="aligned-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <div>
+              <div class="aligned-title">Women-operated village hubs</div>
+              <div class="aligned-desc">Each cold hub is managed by trained local women agro-operators who handle crate sanitization, digital weighing, and buyer dispatch.</div>
+            </div>
+          </li>
+          <li class="aligned-item">
+            <svg class="aligned-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <div>
+              <div class="aligned-title">Direct B2B buyer aggregation</div>
+              <div class="aligned-desc">By pooling graded crates across village hubs, cooperatives negotiate direct supply contracts with urban hotels, schools, and grocers.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- What the Social Enterprise Is About + Cooperative Hub Ledger -->
+  <section id="model">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">What KoraFresh is about</div>
+        <h2>Solving the 48-hour farm-gate price trap</h2>
+        <p>
+          Without cold storage, farmers must accept whatever price middlemen offer before sunset on harvest day. KoraFresh gives cooperatives three weeks of breathing room.
+        </p>
+      </div>
+
+      <div class="about-split">
+        <div class="narrative-stack">
+          <div class="surface-card">
+            <div class="card-kicker">1. Harvest and crate check-in</div>
+            <h3>Sanitized 25 kg stackable crates</h3>
+            <p>
+              Farmers bring freshly picked tomatoes, sweet peppers, leafy greens, or citrus to the village hub. Produce is transferred from rough wooden boxes that bruise fruit into ventilated plastic crates.
+            </p>
+          </div>
+          <div class="surface-card">
+            <div class="card-kicker">2. Pay-as-you-store cooling</div>
+            <h3>GHS 2 per crate per day, zero upfront cost</h3>
+            <p>
+              Inside the 4°C solar chamber, ripening slows immediately. Farmers require no subscription or collateral; storage fees are deducted only when the produce sells.
+            </p>
+          </div>
+          <div class="surface-card">
+            <div class="card-kicker">3. Direct urban offtake</div>
+            <h3>Instant Mobile Money settlement</h3>
+            <p>
+              Every checked-in crate appears on our buyer inventory ledger. Urban buyers reserve lots online, and farmers receive instant Mobile Money payouts upon dispatch.
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Cooperative Ledger Table -->
+        <div class="ledger-panel">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+              <h3 style="font-size: 18px; font-weight: 600;">Active cooperative hubs and storage ledger</h3>
+              <span class="mono" style="font-size: 12px; color: var(--text-muted);">Click a row to inspect</span>
+            </div>
+            <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+              Real-time capacity and average farmer price uplift across operating and planned district sites.
+            </p>
+
+            <table class="ledger-table" id="hubTable">
+              <thead>
+                <tr>
+                  <th>District hub</th>
+                  <th>Primary crop</th>
+                  <th class="num-col">Crates stored</th>
+                  <th class="num-col">Chamber temp</th>
+                  <th class="num-col">Farmer uplift</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row-in-use row-selected" tabindex="0" data-detail="Techiman Hub 01 serves 185 smallholder members across 14 women-led groups. Average tomato crate price rose from GHS 140 at the roadside to GHS 230 via direct Accra school feeding contracts.">
+                  <td>Techiman Hub 01</td>
+                  <td>Roma tomatoes</td>
+                  <td class="num-col num">312 / 400</td>
+                  <td class="num-col num">4.2°C</td>
+                  <td class="num-col num">+64% vs gate</td>
+                </tr>
+                <tr class="row-in-use" tabindex="0" data-detail="Ejura Hub 02 cools green bell peppers and garden eggs for 140 farmers, cutting transport spoilage on the Kumasi highway from 38% to 4%.">
+                  <td>Ejura Hub 02</td>
+                  <td>Bell peppers</td>
+                  <td class="num-col num">264 / 400</td>
+                  <td class="num-col num">4.6°C</td>
+                  <td class="num-col num">+58% vs gate</td>
+                </tr>
+                <tr class="row-in-use" tabindex="0" data-detail="Nsawam Hub 03 aggregates okro, cabbage, and pawpaw from Akuapem South cooperatives for direct morning delivery to Accra supermarkets.">
+                  <td>Nsawam Hub 03</td>
+                  <td>Okro and cabbage</td>
+                  <td class="num-col num">348 / 400</td>
+                  <td class="num-col num">4.0°C</td>
+                  <td class="num-col num">+61% vs gate</td>
+                </tr>
+                <tr tabindex="0" data-detail="Navrongo Hub 04 is scheduled for commissioning next harvest season to serve dry-season irrigated tomato farmers in the Upper East Region.">
+                  <td>Navrongo Hub 04 (Planned)</td>
+                  <td>Dry-season tomatoes</td>
+                  <td class="num-col num">0 / 400</td>
+                  <td class="num-col num">--</td>
+                  <td class="num-col num">Target +60%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="hubDetailBox" style="margin-top: 16px; padding: 16px; background-color: var(--bg-page); border-radius: var(--r-control); border: 1px solid var(--border-hairline); font-size: 13px; color: var(--text-secondary);">
+            Techiman Hub 01 serves 185 smallholder members across 14 women-led groups. Average tomato crate price rose from GHS 140 at the roadside to GHS 230 via direct Accra school feeding contracts.
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Scale Estimator -->
+      <div id="impact" class="estimator-panel">
+        <div class="estimator-top">
+          <div>
+            <div class="card-kicker">Interactive impact model</div>
+            <h3 style="font-size: 18px; font-weight: 600;">Project annual community outcomes by number of active hubs</h3>
+          </div>
+          <div class="mono" style="font-size: 14px; font-weight: 500; color: var(--text-primary); background-color: var(--bg-subtle); padding: 8px 12px; border-radius: var(--r-control);">
+            Active hubs: <span id="hubCountLabel">5</span>
+          </div>
+        </div>
+
+        <div class="slider-control">
+          <span class="mono" style="font-size: 12px; color: var(--text-muted);">1</span>
+          <input type="range" id="hubSlider" min="1" max="25" value="5" aria-label="Number of active solar cold hubs" />
+          <span class="mono" style="font-size: 12px; color: var(--text-muted);">25</span>
+        </div>
+
+        <div class="stat-strip" style="margin-bottom: 0;">
+          <div class="stat-card">
+            <div class="stat-label">Smallholder farmers served</div>
+            <div class="stat-figure num" id="farmersVal">925</div>
+            <div class="stat-delta">185 members per hub vs 0 baseline</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Fresh produce saved annually</div>
+            <div class="stat-figure num" id="foodSavedVal">450 t</div>
+            <div class="stat-delta good">90 tons per hub vs landfill spoilage</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Added net farmer income</div>
+            <div class="stat-figure num" id="incomeVal">GHS 1,400,000</div>
+            <div class="stat-delta good">+62% vs uncooled roadside sales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Diesel & rot emissions avoided</div>
+            <div class="stat-figure num" id="co2Val">310 t</div>
+            <div class="stat-delta">CO2e per year vs diesel cold trucks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founder Spotlight Section -->
+  <section id="founder">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Founder</div>
+        <h2>Who is behind KoraFresh</h2>
+      </div>
+
+      <div class="founder-layout">
+        <div class="founder-profile">
+          <div class="founder-monogram">HI</div>
+          <h3 style="font-size: 20px; font-weight: 600; color: var(--text-primary);">Haris Issah</h3>
+          <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">Founder & Lead Architect</div>
+
+          <ul class="founder-meta-list">
+            <li class="founder-meta-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+              <span>Ashesi University</span>
+            </li>
+            <li class="founder-meta-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Berekuso & Accra, Ghana</span>
+            </li>
+            <li class="founder-meta-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>Solar cold-chain & market systems</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="founder-narrative">
+          <h3>Putting time and bargaining power back in the farmer's hands</h3>
+          <p>
+            Growing up in Ghana, Haris Issah saw a recurring contradiction across agricultural markets: smallholder farmers work months to cultivate high-value vegetables, yet remain the lowest-paid participants in the food supply chain because they cannot pause spoilage after harvest.
+          </p>
+          <div class="founder-pullquote">
+            "When a farmer watches half her tomatoes soften in the afternoon heat, she loses school fees and bargaining power at the same time. Cold storage at the village gate turns a 48-hour distress sale into a three-week fair market."
+          </div>
+          <p>
+            Formulated at Ashesi University, Haris structured KoraFresh as a self-sustaining social enterprise rather than a grant-dependent charity. Each hub's GHS 2 daily crate tariff covers local women operators' salaries and preventive solar maintenance, while returning more than five times the rental cost in preserved crop value to participating farmers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Involved / Partnership Section -->
+  <section id="partner">
+    <div class="container">
+      <div class="contact-split">
+        <div>
+          <div class="section-label">Partner with KoraFresh</div>
+          <h2 style="font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 12px;">Deploy a hub or source farm-chilled produce</h2>
+          <p style="font-size: 16px; color: var(--text-secondary); margin-bottom: 24px;">
+            We work with agricultural cooperatives, institutional kitchens, impact investors, and campus engineering partners across Ghana.
+          </p>
+
+          <ul class="founder-meta-list" style="border-top: none; padding-top: 0;">
+            <li class="founder-meta-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span class="mono">haris.issah@korafresh.org</span>
+            </li>
+            <li class="founder-meta-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Ashesi University, 1 University Ave, Berekuso</span>
+            </li>
+          </ul>
+        </div>
+
+        <form class="form-panel" id="partnerForm">
+          <div class="form-field">
+            <label for="orgName">Name or organization</label>
+            <input type="text" id="orgName" placeholder="Kwame Mensah · Bono East Co-op" required />
+          </div>
+          <div class="form-field">
+            <label for="partnerType">Partnership category</label>
+            <select id="partnerType">
+              <option>Request a solar cold hub for a farming cooperative</option>
+              <option>Source chilled produce in bulk (school, hotel, retailer)</option>
+              <option>Co-finance a village hub deployment</option>
+              <option>Ashesi research or engineering collaboration</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Send inquiry to Haris Issah</button>
+          <div class="form-status" id="formStatus">
+            Medaase, your inquiry has been logged for Haris Issah.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>KoraFresh Social Enterprise · Founded by Haris Issah at Ashesi University</span>
+      <span class="mono">USSD *713*88# · Berekuso, Ghana</span>
+    </div>
+  </footer>
+
+  <script>
+    // Interactive Impact Estimator (formatted in one consistent tabular format)
+    const hubSlider = document.getElementById('hubSlider');
+    const hubCountLabel = document.getElementById('hubCountLabel');
+    const farmersVal = document.getElementById('farmersVal');
+    const foodSavedVal = document.getElementById('foodSavedVal');
+    const incomeVal = document.getElementById('incomeVal');
+    const co2Val = document.getElementById('co2Val');
+
+    hubSlider.addEventListener('input', (e) => {
+      const hubs = parseInt(e.target.value, 10);
+      hubCountLabel.textContent = String(hubs);
+      farmersVal.textContent = (hubs * 185).toLocaleString('en-US');
+      foodSavedVal.textContent = `${(hubs * 90).toLocaleString('en-US')} t`;
+      incomeVal.textContent = `GHS ${(hubs * 280000).toLocaleString('en-US')}`;
+      co2Val.textContent = `${(hubs * 62).toLocaleString('en-US')} t`;
+    });
+
+    // Interactive Cooperative Table Row Selection (click + keyboard Enter/Space)
+    const rows = document.querySelectorAll('#hubTable tbody tr');
+    const detailBox = document.getElementById('hubDetailBox');
+
+    function selectRow(row) {
+      rows.forEach((r) => r.classList.remove('row-selected'));
+      row.classList.add('row-selected');
+      detailBox.textContent = row.getAttribute('data-detail');
+    }
+
+    rows.forEach((row) => {
+      row.addEventListener('click', () => selectRow(row));
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectRow(row);
+        }
+      });
+    });
+
+    // Partnership form feedback
+    const partnerForm = document.getElementById('partnerForm');
+    const formStatus = document.getElementById('formStatus');
+    partnerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formStatus.style.display = 'block';
+      partnerForm.reset();
+    });
+  </script>
+</body>
+</html>
